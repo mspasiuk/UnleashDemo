@@ -363,4 +363,4 @@ MigrationBackup/
 FodyWeavers.xsd
 
 #postgres folder
-.postgres-data/**
+/.postgres-data/**
