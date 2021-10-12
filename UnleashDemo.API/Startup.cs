@@ -11,6 +11,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Unleash;
 
 namespace UnleashDemo.API
 {
@@ -26,6 +27,21 @@ namespace UnleashDemo.API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+
+            var unleashSettings = new UnleashSettings()
+            {
+                AppName = "dot-net-client",
+                Environment = "local",
+                UnleashApi = new Uri("http://unleashed-server:4242/api/"),
+                CustomHttpHeaders = new Dictionary<string,string>()
+                {
+                    {"Authorization","4573f9880bbc21e699fe1bf9f84273b6b791ee04ad3361142fa7084afaf550ab" }
+                },
+                 
+                
+            };
+
+            services.AddSingleton<IUnleash>(new DefaultUnleash(unleashSettings));
 
             services.AddControllers();
             services.AddSwaggerGen(c =>

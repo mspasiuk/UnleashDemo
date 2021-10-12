@@ -11,6 +11,8 @@ services:
     build:
       context: .
       dockerfile: UnleashDemo.API/Dockerfile
+    networks:
+     - unleashed-network
 
   unleashed-server:
     image: unleashorg/unleash-server
@@ -28,6 +30,7 @@ services:
      - unleashed-network
     depends_on:
      - postgres_db
+    restart: always
 
 
   #Postgre Database

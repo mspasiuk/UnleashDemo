@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Unleash;
 
 namespace UnleashDemo.API.Controllers
 {
@@ -17,23 +18,38 @@ namespace UnleashDemo.API.Controllers
         };
 
         private readonly ILogger<WeatherForecastController> _logger;
+        private readonly IUnleash _unleash;
 
-        public WeatherForecastController(ILogger<WeatherForecastController> logger)
+        public WeatherForecastController(ILogger<WeatherForecastController> logger, IUnleash unleash)
         {
             _logger = logger;
+            _unleash= unleash;
         }
 
         [HttpGet]
-        public IEnumerable<WeatherForecast> Get()
+        public IActionResult Get()
         {
-            var rng = new Random();
-            return Enumerable.Range(1, 5).Select(index => new WeatherForecast
+            
+            //Use feature flag
+
+            if (_unleash.IsEnabled("Testcontroller"))
             {
-                Date = DateTime.Now.AddDays(index),
-                TemperatureC = rng.Next(-20, 55),
-                Summary = Summaries[rng.Next(Summaries.Length)]
-            })
-            .ToArray();
+                var rng = new Random();
+                var result =  Enumerable.Range(1, 5).Select(index => new WeatherForecast
+                {
+                    Date = DateTime.Now.AddDays(index),
+                    TemperatureC = rng.Next(-20, 55),
+                    Summary = Summaries[rng.Next(Summaries.Length)]
+                })
+                .ToArray();
+                return Ok(result);
+            }
+            else
+            {
+                var msg = "not implemented";
+                return Ok(msg);
+            }
+            
         }
     }
 }
